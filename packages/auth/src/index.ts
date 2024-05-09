@@ -5,16 +5,24 @@ import {
   AbilityBuilder,
 } from '@casl/ability'
 import { z } from 'zod'
-import { User } from '@/auth/models/user'
-import { permissions } from '@/auth/permissions'
-import { BillingSubject } from '@/auth/subjects/billing'
-import { UserSubject } from '@/auth/subjects/user'
-import { ProjectSubject } from '@/auth/subjects/project'
+import { User } from './models/user'
+import { permissions } from './permissions'
+import { BillingSubject } from './subjects/billing'
+import { UserSubject } from './subjects/user'
+import { ProjectSubject } from './subjects/project'
+import { OrganizationSubject } from './subjects/organization'
+import { InviteSubject } from './subjects/invite'
+
+export * from './models/organization'
+export * from './models/project'
+export * from './models/user'
 
 const AppAbilities = z.union([
   ProjectSubject,
   UserSubject,
   BillingSubject,
+  OrganizationSubject,
+  InviteSubject,
   z.tuple([z.literal('manage'), z.literal('all')]),
 ])
 
