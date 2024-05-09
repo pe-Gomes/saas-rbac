@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "@saas/tsconfig/library.json"
+  ],
+  "include": [
+    "src/**/*"
+  ],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/auth/*": [
+        "./src/*"
+      ]
+    }
+  }
+}
