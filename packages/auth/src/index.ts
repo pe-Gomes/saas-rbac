@@ -1,31 +1,27 @@
 import {
   createMongoAbility,
-  ForcedSubject,
   CreateAbility,
   MongoAbility,
   AbilityBuilder,
 } from '@casl/ability'
+import { z } from 'zod'
 import { User } from '@/auth/models/user'
-import { permissions } from './permissions'
+import { permissions } from '@/auth/permissions'
+import { BillingSubject } from '@/auth/subjects/billing'
+import { UserSubject } from '@/auth/subjects/user'
+import { ProjectSubject } from '@/auth/subjects/project'
 
-const actions = ['manage', 'invite', 'delete'] as const
-const subjects = ['User', 'all'] as const
+const AppAbilities = z.union([
+  ProjectSubject,
+  UserSubject,
+  BillingSubject,
+  z.tuple([z.literal('manage'), z.literal('all')]),
+])
 
-type AppAbilities = [
-  (typeof actions)[number],
-  (
-    | (typeof subjects)[number]
-    | ForcedSubject<Exclude<(typeof subjects)[number], 'all'>>
-  ),
-]
-
-export type AppAbility = MongoAbility<AppAbilities>
+export type AppAbility = MongoAbility<z.infer<typeof AppAbilities>>
 export const createAppAbility = createMongoAbility as CreateAbility<AppAbility>
 
-const { build, can, cannot } = new AbilityBuilder(createAppAbility)
-
-can('invite', 'User')
-cannot('delete', 'User')
+const { build } = new AbilityBuilder(createAppAbility)
 
 /**
  * The ability represents the permissions of each subject in the system created
@@ -53,5 +49,9 @@ export function defineAbilityFor(user: User) {
 
   permissions[user.role](user, builder)
 
-  return builder.build()
+  return builder.build({
+    detectSubjectType(subject) {
+      return subject.__typename
+    },
+  })
 }

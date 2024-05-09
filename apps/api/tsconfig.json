@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "@saas/tsconfig/node.json"
+  ],
+  "include": [
+    "src/**/*"
+  ],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/api/*": [
+        "./src/*"
+      ]
+    }
+  }
+}
