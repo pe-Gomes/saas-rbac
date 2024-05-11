@@ -15,7 +15,9 @@ export async function createAccount(app: FastifyInstance) {
     '/users',
     {
       schema: {
+        summary: 'Create a new user',
         body: createUserSchema,
+        // TODO: Create responses schemas with zod
       },
     },
     async (req, res) => {
