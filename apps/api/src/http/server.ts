@@ -1,5 +1,8 @@
+import 'dotenv/config'
+
 import { fastify } from 'fastify'
 import fastifyCors from '@fastify/cors'
+import fastifyJWT from '@fastify/jwt'
 import fastifySwagger from '@fastify/swagger'
 import ScalarApiReference from '@scalar/fastify-api-reference'
 import {
@@ -8,8 +11,11 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod'
-import { createAccount } from './routes/auth/create-account'
 import { swagger } from './routes/swagger'
+
+import { createAccount } from './routes/auth/create-account'
+import { authenticateWithPassword } from './routes/auth/authenticate-password'
+import { env } from '@/env'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -39,12 +45,17 @@ app.register(ScalarApiReference, {
 })
 app.register(swagger)
 
+app.register(fastifyJWT, {
+  secret: env.JWT_SECRET,
+})
+
 // Application routes
 app.register(createAccount)
+app.register(authenticateWithPassword)
 
 // Await for the Fastify App
 app.ready()
 
-app.listen({ port: 3333 }).then(() => {
+app.listen({ port: env.PORT }).then(() => {
   console.log('HTTP Server listening on port 3333')
 })

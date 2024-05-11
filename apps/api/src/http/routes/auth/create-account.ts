@@ -37,11 +37,24 @@ export async function createAccount(app: FastifyInstance) {
         return res.status(500).send({ message: 'Internal Server Error' })
       }
 
+      const [_, domain] = email.split('@')
+
+      const isDomainAttachedToOrg = await db.organization.findFirst({
+        where: { domain, shouldAttachUsersByDomain: true },
+      })
+
       const user = await db.user.create({
         data: {
           name,
           email,
           passwordHash,
+          memberships: isDomainAttachedToOrg
+            ? {
+                create: {
+                  organizationId: isDomainAttachedToOrg.id,
+                },
+              }
+            : undefined,
         },
       })
 
