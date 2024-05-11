@@ -4,12 +4,7 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint",
-    "db": "prisma studio",
-    "db:migrate": "prisma migrate dev",
-    "db:push": "prisma db push",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "lint": "turbo lint"
   },
   "devDependencies": {
     "turbo": "latest"
