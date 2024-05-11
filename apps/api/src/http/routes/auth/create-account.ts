@@ -1,6 +1,8 @@
 import { FastifyInstance } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
+import { db } from '@/infra/db'
+import { hashPassword } from '@/lib/hash-password'
 
 const createUserSchema = z.object({
   name: z.string(),
@@ -16,8 +18,32 @@ export async function createAccount(app: FastifyInstance) {
         body: createUserSchema,
       },
     },
-    () => {
-      return 'User created successfully!'
+    async (req, res) => {
+      const { name, email, password } = req.body
+
+      const userExists = await db.user.findFirst({ where: { email } })
+
+      if (userExists) {
+        return res
+          .status(400)
+          .send({ message: 'user with same e-amil already exists.' })
+      }
+
+      const passwordHash = await hashPassword(password)
+
+      if (!passwordHash) {
+        return res.status(500).send({ message: 'Internal Server Error' })
+      }
+
+      const user = await db.user.create({
+        data: {
+          name,
+          email,
+          passwordHash,
+        },
+      })
+
+      return res.status(201).send(user)
     },
   )
 }
