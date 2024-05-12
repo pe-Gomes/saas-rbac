@@ -20,6 +20,8 @@ import { passwordReset } from './routes/auth/password-reset'
 import { authenticateWithGitHub } from './routes/auth/authenticate-github'
 import { createOrganization } from './routes/org/create-org'
 import { getUserMembership } from './routes/org/get-membership'
+import { getOneOrganization } from './routes/org/get-one-organization'
+import { getManyOrganizations } from './routes/org/get-many-organizations'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -72,6 +74,8 @@ app.register(passwordReset)
 app.register(authenticateWithGitHub)
 app.register(createOrganization)
 app.register(getUserMembership)
+app.register(getOneOrganization)
+app.register(getManyOrganizations)
 
 // Await for the Fastify App
 app.ready()
