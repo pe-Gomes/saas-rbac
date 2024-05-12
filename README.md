@@ -84,3 +84,4 @@ Roles & permissions.
 ## External Docs
 
 - [TurboRepo Docs](https://turbo.build/repo/docs)
+- [GitHub Web OAuth](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#web-application-flow)

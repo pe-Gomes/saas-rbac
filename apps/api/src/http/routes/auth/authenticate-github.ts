@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { db } from '@/infra/db'
-import { env } from '@/env'
+import { env } from '@saas/env'
 import { z } from 'zod'
 
 export async function authenticateWithGitHub(app: FastifyInstance) {

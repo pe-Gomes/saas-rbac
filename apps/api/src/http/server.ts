@@ -1,5 +1,4 @@
-import 'dotenv/config'
-import { env } from '@/env'
+import { env } from '@saas/env'
 
 import { fastify } from 'fastify'
 import fastifyCors from '@fastify/cors'
