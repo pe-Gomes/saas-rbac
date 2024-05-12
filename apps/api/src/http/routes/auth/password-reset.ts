@@ -6,7 +6,7 @@ import z from 'zod'
 import { hashPassword } from '@/lib/hash-password'
 
 export async function passwordReset(app: FastifyInstance) {
-  app.withTypeProvider<ZodTypeProvider>().post(
+  app.withTypeProvider<ZodTypeProvider>().put(
     '/password/reset',
     {
       schema: {
