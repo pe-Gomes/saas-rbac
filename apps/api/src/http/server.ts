@@ -12,8 +12,6 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod'
-
-import { swagger } from './routes/swagger'
 import { createAccount } from './routes/auth/create-account'
 import { authenticateWithPassword } from './routes/auth/authenticate-password'
 import { getUserProfile } from './routes/auth/get-profile'
@@ -48,7 +46,7 @@ app.register(ScalarApiReference, {
     theme: 'purple',
   },
 })
-app.register(swagger)
+//app.register(swagger)
 
 app.register(fastifyJWT, {
   secret: env.JWT_SECRET,

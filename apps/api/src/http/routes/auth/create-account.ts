@@ -16,6 +16,7 @@ export async function createAccount(app: FastifyInstance) {
     '/users',
     {
       schema: {
+        tags: ['user'],
         summary: 'Create a new user',
         body: createUserSchema,
         response: {
