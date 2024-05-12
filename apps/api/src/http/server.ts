@@ -35,7 +35,16 @@ app.register(fastifySwagger, {
       description: 'Full-stack SaaS app with multi-tenancy & RBAC',
       version: '0.1.0',
     },
-    servers: [],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'JWT Bearer Token',
+        },
+      },
+    },
   },
   transform: jsonSchemaTransform,
 })
