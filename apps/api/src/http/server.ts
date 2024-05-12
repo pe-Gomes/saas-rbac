@@ -22,6 +22,7 @@ import { createOrganization } from './routes/org/create-org'
 import { getUserMembership } from './routes/org/get-membership'
 import { getOneOrganization } from './routes/org/get-one-organization'
 import { getManyOrganizations } from './routes/org/get-many-organizations'
+import { updateOrganization } from './routes/org/update-org'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -76,6 +77,7 @@ app.register(createOrganization)
 app.register(getUserMembership)
 app.register(getOneOrganization)
 app.register(getManyOrganizations)
+app.register(updateOrganization)
 
 // Await for the Fastify App
 app.ready()
