@@ -1,47 +1,51 @@
-import { db } from '@/infra/db'
 import { FastifyInstance } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
-import { z } from 'zod'
 import { BadRequestError } from '../_errors/bad-request-error'
+import { db } from '@/infra/db'
+import { auth } from '@/http/middlewares/auth'
+import { z } from 'zod'
 
 export async function getUserProfile(app: FastifyInstance) {
-  app.withTypeProvider<ZodTypeProvider>().get(
-    '/profile',
-    {
-      schema: {
-        tags: ['auth'],
-        summary: 'Get Authenticated User Profile',
-        response: {
-          200: z.object({
-            user: z.object({
-              id: z.string(),
-              name: z.string().nullable(),
-              email: z.string(),
-              avatarUrl: z.string().nullable(),
+  app
+    .withTypeProvider<ZodTypeProvider>()
+    .register(auth)
+    .get(
+      '/profile',
+      {
+        schema: {
+          tags: ['auth'],
+          summary: 'Get Authenticated User Profile',
+          response: {
+            200: z.object({
+              user: z.object({
+                id: z.string(),
+                name: z.string().nullable(),
+                email: z.string(),
+                avatarUrl: z.string().nullable(),
+              }),
             }),
-          }),
-          400: z.object({ message: z.string() }),
+            400: z.object({ message: z.string() }),
+          },
         },
       },
-    },
-    async (req, res) => {
-      const { sub } = await req.jwtVerify<{ sub: string }>()
+      async (req, res) => {
+        const userId = await req.getCurrentUserId()
 
-      const user = await db.user.findUnique({
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          avatarUrl: true,
-        },
-        where: { id: sub },
-      })
+        const user = await db.user.findUnique({
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatarUrl: true,
+          },
+          where: { id: userId },
+        })
 
-      if (!user) {
-        throw new BadRequestError('User not found.')
-      }
+        if (!user) {
+          throw new BadRequestError('User not found.')
+        }
 
-      return res.status(200).send({ user })
-    },
-  )
+        return res.status(200).send({ user })
+      },
+    )
 }

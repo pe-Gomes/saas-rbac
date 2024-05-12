@@ -3,7 +3,8 @@
     "@saas/tsconfig/node.json"
   ],
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "@types/**/*"
   ],
   "compilerOptions": {
     "baseUrl": ".",
