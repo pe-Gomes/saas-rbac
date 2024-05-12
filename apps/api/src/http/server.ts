@@ -18,6 +18,8 @@ import { errorHandler } from './error-handler'
 import { requestPasswordRecovery } from './routes/auth/request-password-recovery'
 import { passwordReset } from './routes/auth/password-reset'
 import { authenticateWithGitHub } from './routes/auth/authenticate-github'
+import { createOrganization } from './routes/org/create-org'
+import { getUserMembership } from './routes/org/get-membership'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -68,6 +70,8 @@ app.register(getUserProfile)
 app.register(requestPasswordRecovery)
 app.register(passwordReset)
 app.register(authenticateWithGitHub)
+app.register(createOrganization)
+app.register(getUserMembership)
 
 // Await for the Fastify App
 app.ready()
