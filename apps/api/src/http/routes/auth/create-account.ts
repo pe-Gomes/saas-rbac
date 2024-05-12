@@ -3,6 +3,7 @@ import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { db } from '@/infra/db'
 import { hashPassword } from '@/lib/hash-password'
+import { BadRequestError } from '../_errors/bad-request-error'
 
 const createUserSchema = z.object({
   name: z.string(),
@@ -17,7 +18,16 @@ export async function createAccount(app: FastifyInstance) {
       schema: {
         summary: 'Create a new user',
         body: createUserSchema,
-        // TODO: Create responses schemas with zod
+        response: {
+          201: z.object({
+            user: z.object({
+              id: z.string(),
+              name: z.string(),
+              email: z.string().email(),
+            }),
+          }),
+          400: z.object({ message: z.string() }),
+        },
       },
     },
     async (req, res) => {
@@ -26,16 +36,10 @@ export async function createAccount(app: FastifyInstance) {
       const userExists = await db.user.findFirst({ where: { email } })
 
       if (userExists) {
-        return res
-          .status(400)
-          .send({ message: 'user with same e-amil already exists.' })
+        throw new BadRequestError('User with same e-amil already exists.')
       }
 
       const passwordHash = await hashPassword(password)
-
-      if (!passwordHash) {
-        return res.status(500).send({ message: 'Internal Server Error' })
-      }
 
       const [_, domain] = email.split('@')
 
@@ -43,7 +47,7 @@ export async function createAccount(app: FastifyInstance) {
         where: { domain, shouldAttachUsersByDomain: true },
       })
 
-      const user = await db.user.create({
+      const { id } = await db.user.create({
         data: {
           name,
           email,
@@ -58,7 +62,13 @@ export async function createAccount(app: FastifyInstance) {
         },
       })
 
-      return res.status(201).send(user)
+      return res.status(201).send({
+        user: {
+          id,
+          name,
+          email,
+        },
+      })
     },
   )
 }

@@ -3,6 +3,8 @@ import { comparePassword } from '@/lib/hash-password'
 import { FastifyInstance } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
+import { UnauthorizedError } from '../_errors/unauthorized-error'
+import { BadRequestError } from '../_errors/bad-request-error'
 
 export async function authenticateWithPassword(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
@@ -28,19 +30,19 @@ export async function authenticateWithPassword(app: FastifyInstance) {
       const user = await db.user.findFirst({ where: { email } })
 
       if (!user) {
-        return res.status(401).send({ message: 'Invalid credentials.' })
+        throw new UnauthorizedError('Invalid credentials.')
       }
 
       if (user?.passwordHash === null) {
-        return res
-          .status(400)
-          .send({ message: 'User does not have a password, use social login.' })
+        throw new BadRequestError(
+          'User does not have a password, use social login.',
+        )
       }
 
       const isPasswordValid = await comparePassword(password, user.passwordHash)
 
       if (!isPasswordValid) {
-        return res.status(401).send({ message: 'Invalid credentials.' })
+        throw new UnauthorizedError('Invalid credentials.')
       }
 
       const token = await res.jwtSign({ sub: user.id }, { expiresIn: '7d' })

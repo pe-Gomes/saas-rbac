@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import { env } from '@/env'
 
 import { fastify } from 'fastify'
 import fastifyCors from '@fastify/cors'
@@ -11,16 +12,18 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod'
-import { swagger } from './routes/swagger'
 
+import { swagger } from './routes/swagger'
 import { createAccount } from './routes/auth/create-account'
 import { authenticateWithPassword } from './routes/auth/authenticate-password'
-import { env } from '@/env'
+import { getUserProfile } from './routes/auth/get-profile'
+import { errorHandler } from './error-handler'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
+app.setErrorHandler(errorHandler)
 
 app.register(fastifyCors)
 
@@ -52,6 +55,7 @@ app.register(fastifyJWT, {
 // Application routes
 app.register(createAccount)
 app.register(authenticateWithPassword)
+app.register(getUserProfile)
 
 // Await for the Fastify App
 app.ready()
