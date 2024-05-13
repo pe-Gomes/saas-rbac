@@ -24,6 +24,7 @@ import { getOneOrganization } from './routes/org/get-one-organization'
 import { getManyOrganizations } from './routes/org/get-many-organizations'
 import { updateOrganization } from './routes/org/update-org'
 import { shutdownOrganization } from './routes/org/shutdown-org'
+import { transferOrganization } from './routes/org/transfer-org'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -61,7 +62,6 @@ app.register(ScalarApiReference, {
     theme: 'purple',
   },
 })
-//app.register(swagger)
 
 app.register(fastifyJWT, {
   secret: env.JWT_SECRET,
@@ -80,6 +80,7 @@ app.register(getOneOrganization)
 app.register(getManyOrganizations)
 app.register(updateOrganization)
 app.register(shutdownOrganization)
+app.register(transferOrganization)
 
 // Await for the Fastify App
 app.ready()
