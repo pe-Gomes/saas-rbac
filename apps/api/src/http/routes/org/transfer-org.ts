@@ -71,11 +71,22 @@ export async function transferOrganization(app: FastifyInstance) {
             where: {
               organizationId_userId: {
                 organizationId: organization.id,
-                userId: member.userId,
+                userId: transferToUserId,
               },
             },
             data: {
               role: 'ADMIN',
+            },
+          }),
+          db.member.update({
+            where: {
+              organizationId_userId: {
+                organizationId: organization.id,
+                userId,
+              },
+            },
+            data: {
+              role: 'MEMBER',
             },
           }),
           db.organization.update({
