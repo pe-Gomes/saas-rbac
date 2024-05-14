@@ -38,8 +38,8 @@ export async function getOrganizationMembers(app: FastifyInstance) {
                 }),
               ),
             }),
-            400: z.object({
-              message: z.string().uuid(),
+            401: z.object({
+              message: z.string(),
             }),
           },
         },
