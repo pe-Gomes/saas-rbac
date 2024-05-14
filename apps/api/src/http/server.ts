@@ -30,6 +30,7 @@ import { deleteProject } from './routes/project/delete-project'
 import { getOneProject } from './routes/project/get-one-project'
 import { getOrganizationProjects } from './routes/project/get-org-projects'
 import { updateProject } from './routes/project/update-project'
+import { getOrganizationMembers } from './routes/member/get-org-members'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -91,6 +92,7 @@ app.register(deleteProject)
 app.register(getOneProject)
 app.register(getOrganizationProjects)
 app.register(updateProject)
+app.register(getOrganizationMembers)
 
 // Await for the Fastify App
 app.ready()
