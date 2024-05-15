@@ -34,13 +34,6 @@ export async function acceptInvite(app: FastifyInstance) {
           where: {
             id: inviteId,
           },
-          include: {
-            organization: {
-              select: {
-                id: true,
-              },
-            },
-          },
         })
 
         if (!invite) {
