@@ -36,6 +36,7 @@ import { removeMember } from './routes/member/delete-member'
 import { createInvite } from './routes/invite/create-invite'
 import { getInvite } from './routes/invite/get-invite'
 import { getManyInvites } from './routes/invite/get-many-invites'
+import { acceptInvite } from './routes/invite/accept-invite'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -103,6 +104,7 @@ app.register(removeMember)
 app.register(createInvite)
 app.register(getInvite)
 app.register(getManyInvites)
+app.register(acceptInvite)
 
 // Await for the Fastify App
 app.ready()
